@@ -1,14 +1,51 @@
+import 'dart:async';
 import 'dart:developer';
+
+import 'package:braindump/screens/AddArticle/add.dart';
 import 'package:braindump/screens/home/home.dart';
 import 'package:braindump/theme/app_color.dart';
 import 'package:flutter/material.dart';
+import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
 void main() {
   runApp(const Main());
 }
 
-class Main extends StatelessWidget {
+class Main extends StatefulWidget {
   const Main({Key? key}) : super(key: key);
+
+  @override
+  State<Main> createState() => _MainState();
+}
+
+class _MainState extends State<Main> {
+  late StreamSubscription _intentDataStreamSubscription;
+  String _sharedText = "";
+  bool _isReceiving = false;
+  @override
+  void initState() {
+    // When the app is still in the memory, this will be called when the user shares something
+    _intentDataStreamSubscription =
+        ReceiveSharingIntent.getTextStream().listen((String value) {
+      setState(() {
+        _sharedText = value;
+        _isReceiving = true;
+      });
+    }, onError: (err) {
+      log("getLinkStream error: $err");
+    });
+
+    // For sharing or opening urls/text coming from outside the app while the app is closed
+    ReceiveSharingIntent.getInitialText().then((String? value) {
+      setState(() {
+        if (value != null) {
+          _sharedText = value;
+          _isReceiving = true;
+        }
+      });
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +76,7 @@ class Main extends StatelessWidget {
           shape: const Border(
               bottom: BorderSide(color: CustomColors.bordercolor, width: 0.5)),
         ),
-        body: const HomePage(),
+        body: _isReceiving ? const AddScreen() : const HomePage(),
       ),
     );
   }

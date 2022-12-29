@@ -41,26 +41,27 @@ class _ContentBlockState extends State<ContentBlock> {
   Widget build(BuildContext context) {
     return Dismissible(
       background: Container(
-        color: Colors.green,
+        color: const Color(0XFFAEFF5E),
         child:
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 40),
             child: const Icon(
               Icons.check,
-              color: Colors.white,
+              color: Colors.black,
             ),
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 40),
             child: const Icon(
               Icons.check,
-              color: Colors.white,
+              color: Colors.black,
             ),
           ),
         ]),
       ),
       onDismissed: ((direction) {
+        // TODO: Write code to delete the item from the database
         log("Dismissed");
       }),
       key: const ValueKey<int>(1),

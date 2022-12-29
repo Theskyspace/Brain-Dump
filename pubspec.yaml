@@ -30,6 +30,8 @@ dependencies:
   flutter:
     sdk: flutter
   
+  receive_sharing_intent: ^1.4.5
+  
   # simple_url_preview: ^3.0.1
 
 
