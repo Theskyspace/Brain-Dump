@@ -30,6 +30,7 @@ class _MainState extends State<Main> {
       setState(() {
         _sharedText = value;
         _isReceiving = true;
+        log(_sharedText);
       });
     }, onError: (err) {
       log("getLinkStream error: $err");
@@ -40,10 +41,12 @@ class _MainState extends State<Main> {
       setState(() {
         if (value != null) {
           _sharedText = value;
+          log(_sharedText);
           _isReceiving = true;
         }
       });
     });
+
     super.initState();
   }
 
@@ -76,7 +79,11 @@ class _MainState extends State<Main> {
           shape: const Border(
               bottom: BorderSide(color: CustomColors.bordercolor, width: 0.5)),
         ),
-        body: _isReceiving ? const AddScreen() : const HomePage(),
+        body: _isReceiving
+            ? AddScreen(
+                url: _sharedText,
+              )
+            : const HomePage(),
       ),
     );
   }

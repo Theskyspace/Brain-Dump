@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:braindump/theme/app_color.dart';
+import 'package:braindump/utils/database_helper.dart';
 import 'package:flutter/material.dart';
 
 class ContentBlock extends StatefulWidget {
@@ -9,18 +10,20 @@ class ContentBlock extends StatefulWidget {
   final String note;
   final String url;
   final String author;
+  final int id;
 
-  const ContentBlock({
-    Key? key,
-    this.title =
-        "Clean Code: Writing maintainable, readable code, and code that scales",
-    this.decs =
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, se Lorem ipsum dolor sit amet, consectetur adipiscing elit, se",
-    this.note = "Book recommendation I can read later",
-    this.url =
-        "https://www.youtube.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882",
-    this.author = "Akash Joshi",
-  }) : super(key: key);
+  const ContentBlock(
+      {Key? key,
+      this.title =
+          "Clean Code: Writing maintainable, readable code, and code that scales",
+      this.decs =
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, se Lorem ipsum dolor sit amet, consectetur adipiscing elit, se",
+      this.note = "Book recommendation I can read later",
+      this.url =
+          "https://www.youtube.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882",
+      this.author = "Akash Joshi",
+      required this.id})
+      : super(key: key);
 
   @override
   State<ContentBlock> createState() => _ContentBlockState();
@@ -40,32 +43,31 @@ class _ContentBlockState extends State<ContentBlock> {
   @override
   Widget build(BuildContext context) {
     return Dismissible(
+      secondaryBackground: Container(
+        color: Colors.red,
+      ),
       background: Container(
         color: const Color(0XFFAEFF5E),
-        child:
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 40),
-            child: const Icon(
-              Icons.check,
-              color: Colors.black,
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 40),
-            child: const Icon(
-              Icons.check,
-              color: Colors.black,
-            ),
-          ),
-        ]),
       ),
       onDismissed: ((direction) {
-        // TODO: Write code to delete the item from the database
-        log("Dismissed");
+        if (direction == DismissDirection.endToStart) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Brain Cleared a little bit"),
+            ),
+          );
+          ArticleDatabase.instance.delete(widget.id);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Article Archived"),
+            ),
+          );
+        }
       }),
       key: const ValueKey<int>(1),
       child: Container(
+        width: double.infinity,
         decoration: const BoxDecoration(
           border: Border(
             bottom: BorderSide(color: CustomColors.bordercolor, width: 0.5),
@@ -121,7 +123,7 @@ class _ContentBlockState extends State<ContentBlock> {
                             color: Color.fromARGB(211, 244, 244, 244)))
                   ],
                 ),
-              )
+              ),
             ]),
       ),
     );
